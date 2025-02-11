@@ -11,8 +11,8 @@ st.title('🤖 Breast Cancer Prediction App')
 st.info("This app predicts whether a tumor is **Benign or Malignant** based on user inputs.")
 
 # Load dataset
-url = "https://raw.githubusercontent.com/ReethiSharon/rs-machinelearning/master/data.csv"
-df = pd.read_csv(url)
+df = pd.read_csv(r"https://raw.githubusercontent.com/ReethiSharon/rs-machinelearning/master/data.csv")
+
 
 # Convert diagnosis to numerical (M -> 1, B -> 0)
 df['diagnosis'] = df['diagnosis'].map({'M': 1, 'B': 0})
