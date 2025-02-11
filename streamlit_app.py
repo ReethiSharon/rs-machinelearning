@@ -36,11 +36,9 @@ with st.expander('Data Visualization'):
      st.write("**Scatter Plot: Mean Radius vs.Mean Perimeter**")
      st.scatter_chart(
          data=df,
-         x='mean_radius',
-         y = 'mean_perimeter',
-         x_label='Mean Radius',
-         y_label='Mean Perimeter',
-         use_container_width=True
+         x='radius_mean',
+         y = 'perimeter_mean',
+         color='diagnosis'
          
      )
     
