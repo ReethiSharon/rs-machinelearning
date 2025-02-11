@@ -8,7 +8,7 @@ from sklearn.preprocessing import StandardScaler
 # Title
 st.title('🤖 Breast Cancer Prediction App')
 
-st.info("This app predicts whether a tumor is **Benign (0) or Malignant (1)** based on user inputs.")
+st.info("This app predicts whether a tumor is **Benign or Malignant** based on user inputs.")
 
 # Load dataset
 url = "https://raw.githubusercontent.com/ReethiSharon/rs-machinelearning/master/data.csv"
@@ -16,9 +16,6 @@ df = pd.read_csv(url)
 
 # Convert diagnosis to numerical (M -> 1, B -> 0)
 df['diagnosis'] = df['diagnosis'].map({'M': 1, 'B': 0})
-
-# Drop unnecessary columns
-df = df.drop(['id'], axis=1)
 
 # Split data into features and target
 X = df.drop('diagnosis', axis=1)
@@ -36,14 +33,9 @@ X_test = scaler.transform(X_test)
 model = LogisticRegression()
 model.fit(X_train, y_train)
 
-with st.sidebar:
-    st.header('Input Features🔍')
-    id_input = st.number_input("Enter your ID", min_value=int(df["id"].min()), max_value=int(df["id"].max()), step=1)
-
-
 # Sidebar User Inputs
 with st.sidebar:
-    st.header(' 🧬Enter Tumor Features')
+    st.header('🧬 Enter Tumor Features')
 
     # Get user inputs dynamically
     input_data = []
@@ -51,6 +43,9 @@ with st.sidebar:
         value = st.number_input(f"{feature}", float(df[feature].min()), float(df[feature].max()), float(df[feature].mean()))
         input_data.append(value)
 
+    # ID input for patient identification
+    patient_id = st.number_input("Enter Patient ID", min_value=int(df["id"].min()), max_value=int(df["id"].max()), step=1)
+    
     # Predict button
     if st.button("Predict"):
         input_array = np.array(input_data).reshape(1, -1)
@@ -58,9 +53,8 @@ with st.sidebar:
         prediction = model.predict(input_scaled)[0]  # Get prediction
         probability = model.predict_proba(input_scaled)[0][1]  # Get probability of being malignant
 
-        # Show the result
+        # Show the result with patient ID
         if prediction == 1:
-            st.error(f"🔴 The tumor is **Malignant (Cancerous)** (Confidence: {probability:.2%})")
+            st.error(f"🔴 Patient ID: {patient_id} - The tumor is **Malignant (Cancerous)** (Confidence: {probability:.2%})")
         else:
-            st.success(f"🟢 The tumor is **Benign (Non-Cancerous)** (Confidence: {1 - probability:.2%})")
-
+            st.success(f"🟢 Patient ID: {patient_id} - The tumor is **Benign (Non-Cancerous)** (Confidence: {1 - probability:.2%})")
