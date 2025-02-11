@@ -41,5 +41,8 @@ with st.expander('Data Visualization'):
          color='diagnosis'
          
      )
-    
+
+ with st.sidebar:
+     st.header('Input features')
+     
 
