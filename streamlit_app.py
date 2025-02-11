@@ -50,7 +50,7 @@ with st.sidebar:
                        float(df["radius_mean"].max()), 
                        (df["radius_mean"].min(), df["radius_mean"].max()))
     
-    area_range = st.slider("Select Area Mean Range:", 
+   area_range = st.slider("Select Area Mean Range:", 
                            float(df["area_mean"].min()), 
                            float(df["area_mean"].max()), 
                            (df["area_mean"].min(), df["area_mean"].max()))
