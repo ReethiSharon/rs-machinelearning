@@ -1,7 +1,5 @@
 import streamlit as st
 import pandas as pd
-import numpy as np
-
 
 st.title('🤖 Machine Learning App')
 
@@ -11,18 +9,18 @@ st.info('This app builds a machine learning model using breast cancer data.')
 url = "https://raw.githubusercontent.com/ReethiSharon/rs-machinelearning/master/data.csv"
 df = pd.read_csv(url)
 
+# Convert diagnosis to numerical (M -> 1, B -> 0)
+df['diagnosis'] = df['diagnosis'].map({'M': 1, 'B': 0})
+
 with st.expander('Data'):
     st.write('**Raw Data**')
     st.dataframe(df)
-
-    # Convert diagnosis column to numerical values
-    df['diagnosis'] = df['diagnosis'].map({'M': 1, 'B': 0})
 
     st.write('**Processed Data**')
     st.dataframe(df)
 
     # Features (X) and Target (y)
-    X = df.drop('diagnosis', axis=1)
+    X = df.drop(['id', 'diagnosis'], axis=1)  # Drop ID from features
     y = df['diagnosis']
 
     st.write('**Features (X)**')
@@ -31,50 +29,45 @@ with st.expander('Data'):
     st.write('**Target (y)**')
     st.dataframe(y)
 
-# Scatter plot visualization
-with st.expander('Data Visualization'):
-     st.write("**Scatter Plot: Mean Radius vs.Mean Perimeter**")
-     st.scatter_chart(
-         data=df,
-         x='radius_mean',
-         y = 'perimeter_mean',
-         color='diagnosis'
-         
-     )
+# Sidebar Inputs
 with st.sidebar:
-   st.header('Input features')
-   id=st.number_input("Enter your id.no",min_value=1,max_value=1000000000000)
-   diagnosis = st.selectbox("Select Diagnosis", ["All", "Malignant", "Benign"])
-    
-    # Number Input for Custom Threshold (Fixed Column Name)
-   
-   radius_mean= st.slider("Select Mean Radius:", 
-                       float(df["radius_mean"].min()), 
-                       float(df["radius_mean"].max()), 
-                       (df["radius_mean"].min(), df["radius_mean"].max()))
-    
-   area_range = st.slider("Select Area Mean Range:", 
+    st.header('🔍 Input Features')
+
+    id_input = st.number_input("Enter your ID", min_value=int(df["id"].min()), max_value=int(df["id"].max()), step=1)
+
+    diagnosis = st.selectbox("Select Diagnosis", ["All", "Malignant", "Benign"])
+
+    radius_mean = st.slider("Select Mean Radius:", 
+                            float(df["radius_mean"].min()), 
+                            float(df["radius_mean"].max()), 
+                            (df["radius_mean"].min()))
+
+    area_range = st.slider("Select Area Mean Range:", 
                            float(df["area_mean"].min()), 
                            float(df["area_mean"].max()), 
                            (df["area_mean"].min(), df["area_mean"].max()))
+
     numeric_features = df.select_dtypes(include=['float64', 'int64']).columns
     x_feature = st.selectbox("X-axis Feature", numeric_features)
     y_feature = st.selectbox("Y-axis Feature", numeric_features)
-    
-    # Checkbox for Normalization Option
-     normalize_data=st.checkbox("Normalize Data?")
- if diagnosis != "All":
-    df = df[df["diagnosis"] == diagnosis]
+
+    normalize_data = st.checkbox("Normalize Data?")
+
+# Filter Data Based on Diagnosis Selection
+if diagnosis != "All":
+    diagnosis_value = 1 if diagnosis == "Malignant" else 0
+    df = df[df["diagnosis"] == diagnosis_value]
 
 # Filter Data Based on Area Range
 df = df[(df["area_mean"] >= area_range[0]) & (df["area_mean"] <= area_range[1])]
 
-# Display Filtered Data with ID
+# Display Filtered Data
 st.write("### Filtered Data")
 st.dataframe(df)
 
-# Scatter Plot (Fixed Column Names)
-st.write(f"### Scatter Plot: {x_feature} vs {y_feature}")
-st.scatter_chart(data=df, x=x_feature, y=y_feature)
-  
+# Convert diagnosis back to categorical for coloring
+df["diagnosis_category"] = df["diagnosis"].map({1: "Malignant", 0: "Benign"})
 
+# Scatter Plot
+st.write(f"### Scatter Plot: {x_feature} vs {y_feature}")
+st.scatter_chart(data=df, x=x_feature, y=y_feature, color="diagnosis_category")
