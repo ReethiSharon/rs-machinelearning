@@ -43,6 +43,7 @@ with st.expander('Data Visualization'):
      )
 with st.sidebar:
    st.header('Input features')
+   user_id=st.number_input("Enter your id.no",min_value=1,max_value=100,step=1)
      
    diagnosis=st.selectbox('Diagnosis',('Malignant','Benign'))
 
