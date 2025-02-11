@@ -60,6 +60,6 @@ with st.sidebar:
         # Show the result
         st.subheader(f"🆔 Patient ID: **{patient_id}**")  # Display the entered ID
         if prediction == 1:
-            st.error(f"🔴 The tumor is **Malignant (Cancerous)** (Confidence: {probability:.2%})")
+            st.error(f" 🔴The tumor is **Malignant (Cancerous)** (Confidence: {probability:.2%})")
         else:
-            st.success(f"🟢 The tumor is **Benign (Non-Cancerous)** (Confidence: {1 - probability:.2%})")
+            st.success(f"🟢The tumor is **Benign (Non-Cancerous)** (Confidence: {1 - probability:.2%})")
