@@ -45,7 +45,7 @@ with st.sidebar:
    st.header('Input features')
    id=st.number_input("Enter your id.no",min_value=1,max_value=1000000000000)
    
-   radius = st.slider("Select Mean Radius:", 
+   radius_mean= st.slider("Select Mean Radius:", 
                        float(df["mean radius"].min()), 
                        float(df["mean radius"].max()), 
                        (df["mean radius"].min(), df["mean radius"].max()))
