@@ -23,6 +23,11 @@ with st.expander('Data'):
    y
 
 
+with st.expander('Data Visualization'):
+   st.scatter_chart(data=df, x= )
+   
+
+
 
 
 
