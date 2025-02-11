@@ -6,7 +6,7 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.preprocessing import StandardScaler
 
 # Title
-st.title('🤖 Breast Cancer Prediction App')
+st.title('🩺 Breast Cancer Prediction App')
 
 st.info("This app predicts whether a tumor is **Benign or Malignant** based on user inputs.")
 
