@@ -10,6 +10,10 @@ with st.expander('Data'):
    df=pd.read_csv('https://raw.githubusercontent.com/ReethiSharon/rs-machinelearning/refs/heads/master/data.csv')
    df
 
+   st.write('df')
+   df['diagnosis'] = df['diagnosis'].map({'M': 1, 'B': 0})
+   df
+
    st.write('**X**')
    X = df.drop('diagnosis',axis=1)
    X
