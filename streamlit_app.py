@@ -44,6 +44,9 @@ with st.expander('Data Visualization'):
 with st.sidebar:
    st.header('Input features')
    id=st.number_input("Enter your id.no",min_value=1,max_value=1000000000000)
+    diagnosis = st.selectbox("Select Diagnosis", ["All", "Malignant", "Benign"])
+    
+    # Number Input for Custom Threshold (Fixed Column Name)
    
    radius_mean= st.slider("Select Mean Radius:", 
                        float(df["radius_mean"].min()), 
@@ -54,6 +57,24 @@ with st.sidebar:
                            float(df["area_mean"].min()), 
                            float(df["area_mean"].max()), 
                            (df["area_mean"].min(), df["area_mean"].max()))
- 
+    numeric_features = df.select_dtypes(include=['float64', 'int64']).columns
+    x_feature = st.selectbox("X-axis Feature", numeric_features)
+    y_feature = st.selectbox("Y-axis Feature", numeric_features)
+    
+    # Checkbox for Normalization Option
+     normalize_data=st.checkbox("Normalize Data?")
+ if diagnosis != "All":
+    df = df[df["diagnosis"] == diagnosis]
+
+# Filter Data Based on Area Range
+df = df[(df["area_mean"] >= area_range[0]) & (df["area_mean"] <= area_range[1])]
+
+# Display Filtered Data with ID
+st.write("### Filtered Data")
+st.dataframe(df)
+
+# Scatter Plot (Fixed Column Names)
+st.write(f"### Scatter Plot: {x_feature} vs {y_feature}")
+st.scatter_chart(data=df, x=x_feature, y=y_feature)
   
 
