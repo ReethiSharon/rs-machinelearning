@@ -1,6 +1,6 @@
 import streamlit as st
 import pandas as pd
-import plotly.express as px
+
 
 st.title('🤖 Machine Learning App')
 
@@ -31,10 +31,4 @@ with st.expander('Data'):
     st.dataframe(y)
 
 # Scatter plot visualization
-with st.expander('Data Visualization'):
-    st.write('**Scatter Plot: Mean Radius vs. Mean Perimeter**')
 
-    fig = px.scatter(df, x="mean radius", y="mean perimeter", 
-                     color=df["diagnosis"].map({1: "Malignant", 0: "Benign"}), 
-                     title="Mean Radius vs. Mean Perimeter (Colored by Diagnosis)")
-    st.plotly_chart(fig)
