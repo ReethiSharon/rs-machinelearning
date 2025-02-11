@@ -1,73 +1,61 @@
 import streamlit as st
 import pandas as pd
+import numpy as np
+from sklearn.model_selection import train_test_split
+from sklearn.linear_model import LogisticRegression
+from sklearn.preprocessing import StandardScaler
 
-st.title('🤖 Machine Learning App')
+# Title
+st.title('🤖 Breast Cancer Prediction App')
 
-st.info('This app builds a machine learning model using breast cancer data.')
+st.info("This app predicts whether a tumor is **Benign (0) or Malignant (1)** based on user inputs.")
 
-# Load the dataset
+# Load dataset
 url = "https://raw.githubusercontent.com/ReethiSharon/rs-machinelearning/master/data.csv"
 df = pd.read_csv(url)
 
 # Convert diagnosis to numerical (M -> 1, B -> 0)
 df['diagnosis'] = df['diagnosis'].map({'M': 1, 'B': 0})
 
-with st.expander('Data'):
-    st.write('**Raw Data**')
-    st.dataframe(df)
+# Drop unnecessary columns
+df = df.drop(['id'], axis=1)
 
-    st.write('**Processed Data**')
-    st.dataframe(df)
+# Split data into features and target
+X = df.drop('diagnosis', axis=1)
+y = df['diagnosis']
 
-    # Features (X) and Target (y)
-    X = df.drop(['id', 'diagnosis'], axis=1)  # Drop ID from features
-    y = df['diagnosis']
+# Train/Test Split
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 
-    st.write('**Features (X)**')
-    st.dataframe(X)
+# Scale the features
+scaler = StandardScaler()
+X_train = scaler.fit_transform(X_train)
+X_test = scaler.transform(X_test)
 
-    st.write('**Target (y)**')
-    st.dataframe(y)
+# Train the model (Logistic Regression)
+model = LogisticRegression()
+model.fit(X_train, y_train)
 
-# Sidebar Inputs
+# Sidebar User Inputs
 with st.sidebar:
-    st.header('🔍 Input Features')
+    st.header('🔍 Enter Tumor Features')
 
-    id_input = st.number_input("Enter your ID", min_value=int(df["id"].min()), max_value=int(df["id"].max()), step=1)
+    # Get user inputs dynamically
+    input_data = []
+    for feature in X.columns:
+        value = st.number_input(f"{feature}", float(df[feature].min()), float(df[feature].max()), float(df[feature].mean()))
+        input_data.append(value)
 
-    diagnosis = st.selectbox("Select Diagnosis", ["All", "Malignant", "Benign"])
+    # Predict button
+    if st.button("Predict"):
+        input_array = np.array(input_data).reshape(1, -1)
+        input_scaled = scaler.transform(input_array)  # Scale the input
+        prediction = model.predict(input_scaled)[0]  # Get prediction
+        probability = model.predict_proba(input_scaled)[0][1]  # Get probability of being malignant
 
-    radius_mean = st.slider("Select Mean Radius:", 
-                            float(df["radius_mean"].min()), 
-                            float(df["radius_mean"].max()), 
-                            (df["radius_mean"].min()))
+        # Show the result
+        if prediction == 1:
+            st.error(f"🔴 The tumor is **Malignant (Cancerous)** (Confidence: {probability:.2%})")
+        else:
+            st.success(f"🟢 The tumor is **Benign (Non-Cancerous)** (Confidence: {1 - probability:.2%})")
 
-    area_range = st.slider("Select Area Mean Range:", 
-                           float(df["area_mean"].min()), 
-                           float(df["area_mean"].max()), 
-                           (df["area_mean"].min(), df["area_mean"].max()))
-
-    numeric_features = df.select_dtypes(include=['float64', 'int64']).columns
-    x_feature = st.selectbox("X-axis Feature", numeric_features)
-    y_feature = st.selectbox("Y-axis Feature", numeric_features)
-
-    normalize_data = st.checkbox("Normalize Data?")
-
-# Filter Data Based on Diagnosis Selection
-if diagnosis != "All":
-    diagnosis_value = 1 if diagnosis == "Malignant" else 0
-    df = df[df["diagnosis"] == diagnosis_value]
-
-# Filter Data Based on Area Range
-df = df[(df["area_mean"] >= area_range[0]) & (df["area_mean"] <= area_range[1])]
-
-# Display Filtered Data
-st.write("### Filtered Data")
-st.dataframe(df)
-
-# Convert diagnosis back to categorical for coloring
-df["diagnosis_category"] = df["diagnosis"].map({1: "Malignant", 0: "Benign"})
-
-# Scatter Plot
-st.write(f"### Scatter Plot: {x_feature} vs {y_feature}")
-st.scatter_chart(data=df, x=x_feature, y=y_feature, color="diagnosis_category")
