@@ -44,5 +44,5 @@ with st.expander('Data Visualization'):
 with st.sidebar:
    st.header('Input features')
      
-    diagnosis=st.selectbox('Diagnosis',('Malignant','Benign'))
+   diagnosis=st.selectbox('Diagnosis',('Malignant','Benign'))
 
