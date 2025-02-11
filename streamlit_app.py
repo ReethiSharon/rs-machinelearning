@@ -36,9 +36,14 @@ X_test = scaler.transform(X_test)
 model = LogisticRegression()
 model.fit(X_train, y_train)
 
+with st.sidebar:
+    st.header('Input Features🔍')
+    id_input = st.number_input("Enter your ID", min_value=int(df["id"].min()), max_value=int(df["id"].max()), step=1)
+
+
 # Sidebar User Inputs
 with st.sidebar:
-    st.header('🔍 Enter Tumor Features')
+    st.header(' 🧬Enter Tumor Features')
 
     # Get user inputs dynamically
     input_data = []
