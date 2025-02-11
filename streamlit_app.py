@@ -10,6 +10,14 @@ with st.expander('Data'):
    df=pd.read_csv('https://raw.githubusercontent.com/ReethiSharon/rs-machinelearning/refs/heads/master/data.csv')
    df
 
+   st.write('**X**')
+   X=df.drop('diagnosis',axis=1)
+   X
+
+  st.write('**y**')
+  y=df.diagnosis
+  y
+
 
 
 
