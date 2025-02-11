@@ -17,6 +17,10 @@ df = pd.read_csv(url)
 # Convert diagnosis to numerical (M -> 1, B -> 0)
 df['diagnosis'] = df['diagnosis'].map({'M': 1, 'B': 0})
 
+# Keep 'id' for patient identification but not for prediction
+patient_ids = df['id']  # Store patient IDs separately
+df = df.drop(columns=['id'])  # Remove 'id' from features
+
 # Split data into features and target
 X = df.drop('diagnosis', axis=1)
 y = df['diagnosis']
@@ -35,6 +39,9 @@ model.fit(X_train, y_train)
 
 # Sidebar User Inputs
 with st.sidebar:
+    st.header('🆔 Patient Identification')
+    patient_id = st.number_input("Enter Patient ID", min_value=int(patient_ids.min()), max_value=int(patient_ids.max()), step=1)
+
     st.header('🧬 Enter Tumor Features')
 
     # Get user inputs dynamically
@@ -43,9 +50,6 @@ with st.sidebar:
         value = st.number_input(f"{feature}", float(df[feature].min()), float(df[feature].max()), float(df[feature].mean()))
         input_data.append(value)
 
-    # ID input for patient identification
-    patient_id = st.number_input("Enter Patient ID", min_value=int(df["id"].min()), max_value=int(df["id"].max()), step=1)
-    
     # Predict button
     if st.button("Predict"):
         input_array = np.array(input_data).reshape(1, -1)
@@ -53,8 +57,9 @@ with st.sidebar:
         prediction = model.predict(input_scaled)[0]  # Get prediction
         probability = model.predict_proba(input_scaled)[0][1]  # Get probability of being malignant
 
-        # Show the result with patient ID
+        # Show the result
+        st.subheader(f"🆔 Patient ID: **{patient_id}**")  # Display the entered ID
         if prediction == 1:
-            st.error(f"🔴 Patient ID: {patient_id} - The tumor is **Malignant (Cancerous)** (Confidence: {probability:.2%})")
+            st.error(f"🔴 The tumor is **Malignant (Cancerous)** (Confidence: {probability:.2%})")
         else:
-            st.success(f"🟢 Patient ID: {patient_id} - The tumor is **Benign (Non-Cancerous)** (Confidence: {1 - probability:.2%})")
+            st.success(f"🟢 The tumor is **Benign (Non-Cancerous)** (Confidence: {1 - probability:.2%})")
