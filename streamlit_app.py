@@ -44,7 +44,7 @@ with st.expander('Data Visualization'):
 with st.sidebar:
    st.header('Input features')
    id=st.number_input("Enter your id.no",min_value=1,max_value=1000000000000)
-    diagnosis = st.selectbox("Select Diagnosis", ["All", "Malignant", "Benign"])
+   diagnosis = st.selectbox("Select Diagnosis", ["All", "Malignant", "Benign"])
     
     # Number Input for Custom Threshold (Fixed Column Name)
    
