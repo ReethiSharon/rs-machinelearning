@@ -1,5 +1,6 @@
 import streamlit as st
 import pandas as pd
+import numpy as np
 
 
 st.title('🤖 Machine Learning App')
@@ -32,6 +33,15 @@ with st.expander('Data'):
 
 # Scatter plot visualization
 with st.expander('Data Visualization'):
-    st.scatter_chart(data=df,x='mean_radius',y = 'mean_perimeter',color='diagnosis')
+     st.write("**Scatter Plot: Mean Radius vs.Mean Perimeter**")
+     st.scatter_chart(
+         data=df,
+         x='mean_radius',
+         y = 'mean_perimeter',
+         x_label='Mean Radius',
+         y_label='Mean Perimeter',
+         use_container_width=True
+         
+     )
     
 
