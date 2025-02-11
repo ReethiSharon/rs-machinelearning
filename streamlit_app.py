@@ -31,4 +31,7 @@ with st.expander('Data'):
     st.dataframe(y)
 
 # Scatter plot visualization
+with st.expander('Data Visualization'):
+    st.scatter_chart(data=df,x='mean_radius',y = 'mean_perimeter',color='diagnosis')
+    
 
