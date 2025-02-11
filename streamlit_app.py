@@ -48,7 +48,7 @@ with st.sidebar:
    radius_mean= st.slider("Select Mean Radius:", 
                        float(df["radius_mean"].min()), 
                        float(df["radius_mean"].max()), 
-                       (df["radius_mean"].min(), df["mean radius"].max()))
+                       (df["radius_mean"].min(), df["radius_mean"].max()))
  
   
 
