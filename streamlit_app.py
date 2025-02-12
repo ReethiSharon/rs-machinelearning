@@ -14,7 +14,6 @@ st.info("This app predicts whether a tumor is **Benign or Malignant** based on u
 # Load dataset
 df = pd.read_csv(r"https://raw.githubusercontent.com/ReethiSharon/rs-machinelearning/master/data.csv")
 
-
 # Convert diagnosis to numerical (M -> 1, B -> 0)
 df['diagnosis'] = df['diagnosis'].map({'M': 1, 'B': 0})
 
@@ -38,6 +37,11 @@ X_test = scaler.transform(X_test)
 model = LogisticRegression()
 model.fit(X_train, y_train)
 
+# Compute feature importance
+feature_importance = np.abs(model.coef_[0])
+feature_df = pd.DataFrame({'Feature': X.columns, 'Importance': feature_importance})
+feature_df = feature_df.sort_values(by="Importance", ascending=False)
+
 # Sidebar User Inputs
 with st.sidebar:
     st.header('🆔 Patient Identification')
@@ -48,13 +52,18 @@ with st.sidebar:
     # Get user inputs dynamically
     input_data = []
     for feature in X.columns:
-        value = st.number_input(f"{feature}", float(df[feature].min()), float(df[feature].max()), float(df[feature].mean()))
+        value = st.number_input(
+            f"{feature}",
+            min_value=float(df[feature].min()),
+            max_value=float(df[feature].max()),
+            value=float(df[feature].mean()) if not np.isnan(df[feature].mean()) else 0.0
+        )
         input_data.append(value)
 
     # Predict button
     if st.button("Predict"):
         input_array = np.array(input_data).reshape(1, -1)
-        input_scaled = scaler.transform(input_array)  # Scale the input
+        input_scaled = scaler.transform(input_array.astype(np.float64))  # Fix warning
         prediction = model.predict(input_scaled)[0]  # Get prediction
         probability = model.predict_proba(input_scaled)[0][1]  # Get probability of being malignant
 
@@ -65,6 +74,7 @@ with st.sidebar:
         else:
             st.success(f"🟢The tumor is **Benign (Non-Cancerous)** (Confidence: {1 - probability:.2%})")
 
+# Visualization: Top 10 Features
 fig, ax = plt.subplots()
 ax.barh(feature_df['Feature'][:10], feature_df['Importance'][:10], color='skyblue')
 ax.set_xlabel("Importance Score")
