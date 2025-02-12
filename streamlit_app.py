@@ -1,6 +1,7 @@
 import streamlit as st
 import pandas as pd
 import numpy as np
+import matplotlib.pyplot as plt
 from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LogisticRegression
 from sklearn.preprocessing import StandardScaler
@@ -63,3 +64,13 @@ with st.sidebar:
             st.error(f" 🔴The tumor is **Malignant (Cancerous)** (Confidence: {probability:.2%})")
         else:
             st.success(f"🟢The tumor is **Benign (Non-Cancerous)** (Confidence: {1 - probability:.2%})")
+
+fig, ax = plt.subplots()
+ax.barh(feature_df['Feature'][:10], feature_df['Importance'][:10], color='skyblue')
+ax.set_xlabel("Importance Score")
+ax.set_ylabel("Features")
+ax.set_title("Top 10 Important Features")
+plt.gca().invert_yaxis()  # Invert axis for better readability
+
+# Display chart in Streamlit
+st.pyplot(fig)
