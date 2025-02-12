@@ -84,3 +84,16 @@ plt.gca().invert_yaxis()  # Invert axis for better readability
 
 # Display chart in Streamlit
 st.pyplot(fig)
+
+
+st.markdown("""
+### 🔍 Understanding the Chart:
+- This chart shows the **Top 10 Most Important Features** used in predicting breast cancer.
+- **Higher bars** indicate stronger influence on prediction results.
+
+
+### 🚀 Next Steps:
+- Consult a **healthcare professional** for a proper diagnosis.
+- This tool provides insights, but it should **not** replace medical advice.
+""")
+
